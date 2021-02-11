@@ -87,27 +87,26 @@ Mockito is used for intergration testing. This allows for other objects and meth
 This is then used to ensure that the method that is being tested returns the expected value.
 ```
 @Test
-	public void testCreateOrder() {
-		// RESOURCES
-		final Long customerId = 1L;
-		final Order created = new Order(customerId);
-		final String choice = "N";
+public void testCreateOrder() {
+	// RESOURCES
+	final Long customerId = 1L;
+	final Order created = new Order(customerId);
+	final String choice = "N";
+	
+	// RULES
+	Mockito.when(utils.getLong()).thenReturn(customerId);
+	Mockito.when(orderDAO.createUpdateOrder(Mockito.any(Order.class), Mockito.anyBoolean())).thenReturn(created);
+	Mockito.when(utils.getString()).thenReturn(choice);
 
-		// RULES
-		Mockito.when(utils.getLong()).thenReturn(customerId);
-		Mockito.when(orderDAO.createUpdateOrder(Mockito.any(Order.class), Mockito.anyBoolean())).thenReturn(created);
-		Mockito.when(utils.getString()).thenReturn(choice);
+	// ACTIONS
+	final Order result = orderController.create();
 
-		// ACTIONS
-		final Order result = orderController.create();
-
-		// ASSERTIONS
-		assertEquals(created, result);
-		Mockito.verify(utils, Mockito.times(1)).getLong();
-		Mockito.verify(utils, Mockito.times(1)).getString();
-		Mockito.verify(orderDAO, Mockito.times(1)).createUpdateOrder(Mockito.any(Order.class), Mockito.anyBoolean());
-
-	}
+	// ASSERTIONS
+	assertEquals(created, result);
+	Mockito.verify(utils, Mockito.times(1)).getLong();
+	Mockito.verify(utils, Mockito.times(1)).getString();
+	Mockito.verify(orderDAO, Mockito.times(1)).createUpdateOrder(Mockito.any(Order.class), Mockito.anyBoolean());
+}
 ```
 
 
