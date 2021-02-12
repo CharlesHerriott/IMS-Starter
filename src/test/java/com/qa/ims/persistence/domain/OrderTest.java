@@ -10,7 +10,6 @@ public class OrderTest {
 
 	Order o = new Order(1L, 1L);
 	Order orderOne = new Order(1L, "Charlie", "Herriott", 1L, 1L, "Tooth Brush", 0.0, "Brusher", 0.0);
-	
 
 	@Test
 	public void testEquals() {
@@ -60,7 +59,7 @@ public class OrderTest {
 	public void getItemCostTest() {
 		o.setItemCost(3.0);
 		double result = o.getItemCost();
-		assertEquals(3.0, result,1);
+		assertEquals(3.0, result, 1);
 	}
 
 	@Test
@@ -75,15 +74,15 @@ public class OrderTest {
 		long result = o.getOrderId();
 		assertEquals(1L, result);
 	}
-	
+
 	@Test
 	public void getTotalCostTest() {
 		o.setTotalCost(10.0);
 		double result = o.getTotalCost();
-		assertEquals(10.0, result,1);
-		
+		assertEquals(10.0, result, 1);
+
 	}
-	
+
 	@Test
 	public void customerIdTest() {
 		o.setCustomerId(1L);
@@ -96,11 +95,14 @@ public class OrderTest {
 		String expected = "Customer ID: 1 Order ID: 1";
 		assertEquals(expected, o.toString());
 	}
-	
+
 	@Test
 	public void itemsToStringTest() {
 		Order orderOne = new Order(1L, "Charlie", "Herriott", 1L, 1L, "Tooth Brush", 0.0, "Brusher", 0.0);
-		String expected = "---------------------------------------------------------------------------------------------------------------------------------------------------------------------------\nName: Charlie Herriott | Order ID: 1 | Item ID: 1 | Qty: 1 | Item: Tooth Brush | Item Cost: £0.0 | Description: Brusher | Total Cost: £0.0";
+		String expected = "---------------------------------------------------------------------------------------------------------------------------------------------------------------------------\nName: "
+				+ Formatting.fixedLengthString("Charlie", "Herriott") + " | Order ID: 1 | Item ID: 1 | Qty: 1 | Item: "
+				+ Formatting.fixedLengthString("Tooth Brush") + " | Item Cost: £0.0 | Description: "
+				+ Formatting.fixedLengthString("Brusher") + " | Total Cost: £0.0";
 		assertEquals(expected, orderOne.itemsToString());
 	}
 

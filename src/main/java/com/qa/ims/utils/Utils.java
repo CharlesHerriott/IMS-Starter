@@ -19,7 +19,7 @@ public class Utils {
 	public Utils() {
 		scanner = new Scanner(System.in);
 	}
-
+ 
 	public Long getLong() {
 		String input = null;
 		Long longInput = null;
