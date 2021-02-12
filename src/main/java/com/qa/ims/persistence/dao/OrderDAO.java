@@ -21,7 +21,7 @@ public class OrderDAO implements Dao<Order> {
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	@Override 
+	@Override
 	public Order modelFromResultSet(ResultSet resultSet) throws SQLException {
 		String fname = resultSet.getString("first_name");
 		String sname = resultSet.getString("surname");
@@ -41,13 +41,22 @@ public class OrderDAO implements Dao<Order> {
 		return new Order(orderId, customerId);
 	}
 
+	public Order modelFromResultSetOrderItems(ResultSet resultSet) throws SQLException {
+		Long orderId = resultSet.getLong("order_id");
+		Long itemId = resultSet.getLong("item_id");
+		Long quantity = resultSet.getLong("quantity");
+		return new Order(itemId, orderId, quantity);
+	}
+	
 	/**
 	 * Reads in either all orders or all orderItems.
+	 * 
 	 * @param allItems
 	 * @return
 	 */
 	public List<Order> readAllItems(boolean allItems) {
-		String query = allItems ? query = Queries.READALLORDERITEMS.getDescription() : Queries.READALL.specifyTable("orders");
+		String query = allItems ? query = Queries.READALLORDERITEMS.getDescription()
+				: Queries.READALL.specifyTable("orders");
 		try (Connection connection = DBUtils.getInstance().getConnection();
 				Statement statement = connection.createStatement();
 				ResultSet resultSet = statement.executeQuery(query);) {
@@ -66,8 +75,10 @@ public class OrderDAO implements Dao<Order> {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * Reads a specific row in from the joined table.
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -89,8 +100,10 @@ public class OrderDAO implements Dao<Order> {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * Reads in the latest order or orderItem. TRUE = order. FALSE = orderItem.
+	 * 
 	 * @param item
 	 * @return
 	 */
@@ -108,27 +121,26 @@ public class OrderDAO implements Dao<Order> {
 		} catch (Exception e) {
 			LOGGER.debug(e);
 			LOGGER.error(e.getMessage());
-		} 
+		}
 		return null;
 	}
+
 	/**
 	 * Reads in one row from order table.
+	 * 
 	 * @param id
 	 * @param item
 	 * @return
 	 */
-	public Order read(Long id, boolean item) {
-		String query = item ? Queries.READORDER.getDescription() : Queries.READORDERITEM.getDescription();
+	@Override
+	public Order read(Long id) {
+		String query = Queries.READORDER.getDescription();
 		try (Connection connection = DBUtils.getInstance().getConnection();
 				PreparedStatement statement = connection.prepareStatement(query);) {
 			statement.setLong(1, id);
 			try (ResultSet resultSet = statement.executeQuery();) {
 				resultSet.next();
-				if (item) {
-					return modelFromResultSet(resultSet);
-				} else {
-					return modelFromResultSetBeforeJoin(resultSet);
-				}
+				return modelFromResultSetBeforeJoin(resultSet);
 			}
 		} catch (Exception e) {
 			LOGGER.debug(e);
@@ -137,53 +149,106 @@ public class OrderDAO implements Dao<Order> {
 		}
 		return null;
 	}
-	
+
+	public Order readOrderItem(Long orderId, Long itemId) {
+		String query = Queries.READORDERITEM.getDescription();
+		try (Connection connection = DBUtils.getInstance().getConnection();
+				PreparedStatement statement = connection.prepareStatement(query);) {
+			statement.setLong(1, orderId);
+			statement.setLong(2, itemId);
+			try (ResultSet resultSet = statement.executeQuery();) {
+				resultSet.next();				
+					return modelFromResultSetOrderItems(resultSet);				
+			}
+		} catch (Exception e) {
+			LOGGER.debug(e);
+			LOGGER.error(e.getMessage());
+
+		}
+		return null;
+	}
+
 	/**
-	 * Creates or updates an order. TRUE = create. FALSE = update.
+	 * Creates an order.
+	 * 
 	 * @param order
-	 * @param create
 	 * @return
-	 */ 
-	public Order createUpdateOrder(Order order, boolean create) {
-		String query = create ? Queries.CREATEORDER.getDescription() : Queries.UPDATEORDER.getDescription();
+	 */
+	@Override
+	public Order create(Order order) {
+		String query = Queries.CREATEORDER.getDescription();
 		try (Connection connection = DBUtils.getInstance().getConnection();
 				PreparedStatement statement = connection.prepareStatement(query);) {
 			statement.setLong(1, order.getCustomerId());
 			statement.executeUpdate();
-
-			return readLatestItem(false); 
-
-		} catch (Exception e) {
-			LOGGER.debug(e);
-			LOGGER.error(e.getMessage());
-		}
-		return null; 
-	} 
-
-	/**
-	 * Creates or updates an orderItem. TRUE = create. FALSE = update.
-	 * @param order
-	 * @param create
-	 * @return
-	 */
-	public Order createUpdateOrderItem(Order order, boolean create) {
-		String query = create ? Queries.CREATEORDERITEM.getDescription() : Queries.UPDATEORDERITEM.getDescription();
-		try (Connection connection = DBUtils.getInstance().getConnection();
-				PreparedStatement statement = connection.prepareStatement(query);) {
-			statement.setLong(1, order.getItemId());
-			statement.setLong(2, order.getOrderId());
-			statement.setLong(3, order.getQuantity());
-			statement.executeUpdate();
 			return readLatestItem(false);
+
 		} catch (Exception e) {
 			LOGGER.debug(e);
 			LOGGER.error(e.getMessage());
 		}
 		return null;
 	}
-	 
+
+	@Override
+	public Order update(Order order) {
+		String query = Queries.CREATEORDER.getDescription();
+		try (Connection connection = DBUtils.getInstance().getConnection();
+				PreparedStatement statement = connection.prepareStatement(query);) {
+			statement.setLong(1, order.getQuantity());
+			statement.setLong(2, order.getOrderId());
+			statement.setLong(3, order.getItemId());
+			statement.executeUpdate();
+			return read(order.getOrderId());
+		} catch (Exception e) {
+			LOGGER.debug(e);
+			LOGGER.error(e.getMessage());
+		}
+		return null;
+	}
+
+	/**
+	 * Creates an orderItem.
+	 * 
+	 * @param order
+	 * @return
+	 */
+	public Order createOrderItem(Order order) {
+		String query = Queries.CREATEORDERITEM.getDescription();
+		try (Connection connection = DBUtils.getInstance().getConnection();
+				PreparedStatement statement = connection.prepareStatement(query);) {
+			statement.setLong(1, order.getItemId());
+			statement.setLong(2, order.getOrderId());
+			statement.setLong(3, order.getQuantity());
+			statement.executeUpdate();
+			return readLatestItem(true);
+		} catch (Exception e) {
+			LOGGER.debug(e);
+			LOGGER.error(e.getMessage());
+		}
+		return null;
+	}
+
+	public Order updateOrderItem(Order order) {
+		String query = Queries.UPDATEORDERITEM.getDescription();
+		try (Connection connection = DBUtils.getInstance().getConnection();
+				PreparedStatement statement = connection.prepareStatement(query);) {
+			statement.setLong(1, order.getQuantity());
+			statement.setLong(2, order.getOrderId());
+			statement.setLong(3, order.getItemId());
+			statement.executeUpdate();
+			return readOrderItem(order.getOrderId(), order.getItemId());
+		} catch (Exception e) {
+			LOGGER.debug(e);
+			LOGGER.error(e.getMessage());
+		}
+		return null;
+
+	}
+
 	/**
 	 * Deletes an order from the order table.
+	 * 
 	 * @param id
 	 */
 	@Override
@@ -195,12 +260,13 @@ public class OrderDAO implements Dao<Order> {
 		} catch (Exception e) {
 			LOGGER.debug(e);
 			LOGGER.error(e.getMessage());
-		} 
+		}
 		return 0;
 	}
 
 	/**
 	 * Deletes an orderItem from the orderItem table.
+	 * 
 	 * @param orderId
 	 * @param itemId
 	 * @return
@@ -217,15 +283,17 @@ public class OrderDAO implements Dao<Order> {
 		}
 		return 0;
 	}
+
 	/**
 	 * Deletes null orders - orders without any items.
+	 * 
 	 * @return
 	 */
 	public int deleteNullOrders() {
 		try (Connection connection = DBUtils.getInstance().getConnection();
 				Statement statement = connection.createStatement();
 				ResultSet resultSet = statement.executeQuery(Queries.DELETENULLORDERS.getDescription());) {
-			
+
 		} catch (Exception e) {
 			LOGGER.debug(e);
 			LOGGER.error(e.getMessage());
@@ -233,39 +301,8 @@ public class OrderDAO implements Dao<Order> {
 		return 0;
 	}
 
-	/**
-	 * 
-	 * @param oi
-	 * @return
-	 */
-	public Double calculateCost(List<Order> oi) {
-		Double sum = 0.0;
-		for (Order o : oi) {
-			sum += o.getTotalCost();
-		}
-		return sum;
-	}
-
 	@Override
 	public List<Order> readAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Order read(Long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Order create(Order t) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Order update(Order t) {
 		// TODO Auto-generated method stub
 		return null;
 	}

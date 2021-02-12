@@ -32,16 +32,21 @@ public class ItemControllerTest {
 
 	@Test
 	public void createTest() { 
-		final String item_name = "Mouse", item_desc = "Clicker";
-		final Double item_cost = 8.0;
-		final Item created = new Item(item_name, item_cost, item_desc);
+		// RESOURCES
+		final String itemName = "Mouse", itemDesc = "Clicker";
+		final Double itemCost = 8.0;
+		final Item created = new Item(itemName, itemCost, itemDesc);
 		
-		Mockito.when(utils.getString()).thenReturn(item_name, item_desc);
-		Mockito.when(utils.getDouble()).thenReturn(item_cost);
+		// RULES
+		Mockito.when(utils.getString()).thenReturn(itemName, itemDesc);
+		Mockito.when(utils.getDouble()).thenReturn(itemCost);
 		Mockito.when(itemDAO.create(created)).thenReturn(created);
 		
-		assertEquals(created, controller.create());  
+		// ACTIONS
+		final Item result = controller.create();
 		 
+		// ASSERTIONS
+		assertEquals(created, result); 
 		Mockito.verify(utils, Mockito.times(2)).getString();
 		Mockito.verify(utils, Mockito.times(1)).getDouble();
 		Mockito.verify(itemDAO, Mockito.times(1)).create(created);

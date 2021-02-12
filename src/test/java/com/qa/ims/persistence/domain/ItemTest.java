@@ -40,7 +40,7 @@ public class ItemTest {
 
 	@Test
 	public void testToString(){
-		assertEquals("id: 12345 Name: toothbrush Cost: 15.00 Description: Teeth scrubber", i.toString());
+		assertEquals(Formatting.BR.getDescription() + "\nid: 12345 Name: toothbrush Cost: 15.00 Description: Teeth scrubber", i.toString());
 	} 
 
 }

@@ -54,7 +54,8 @@ public class Item {
 
 	@Override
 	public String toString() {
-		return String.format("id: %d Name: %s Cost: %.2f Description: %s", id, name, cost, description);
+		String br = Formatting.BR.getDescription();
+		return String.format(br + "\nid: %d Name: %s Cost: %.2f Description: %s", id, name, cost, description);
 	}
 
 	@Override

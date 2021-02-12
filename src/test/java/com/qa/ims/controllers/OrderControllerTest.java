@@ -39,7 +39,7 @@ public class OrderControllerTest {
 
 		// RULES
 		Mockito.when(utils.getLong()).thenReturn(customerId);
-		Mockito.when(orderDAO.createUpdateOrder(Mockito.any(Order.class), Mockito.anyBoolean())).thenReturn(created);
+		Mockito.when(orderDAO.create(Mockito.any(Order.class))).thenReturn(created);
 		Mockito.when(utils.getString()).thenReturn(choice);
 
 		// ACTIONS
@@ -49,35 +49,10 @@ public class OrderControllerTest {
 		assertEquals(created, result);
 		Mockito.verify(utils, Mockito.times(1)).getLong();
 		Mockito.verify(utils, Mockito.times(1)).getString();
-		Mockito.verify(orderDAO, Mockito.times(1)).createUpdateOrder(Mockito.any(Order.class), Mockito.anyBoolean());
+		Mockito.verify(orderDAO, Mockito.times(1)).create(Mockito.any(Order.class));
 
 	}
-
-	@Test
-	public void createOrderItemTest() {
-		// RESOURCES
-		final Long itemId = 1L;
-		final Long orderId = 1L;
-		final Long quantity = 5L;
-		final Order created = new Order(itemId, orderId, quantity);
-
-		// RULES
-		Mockito.when(utils.getLong()).thenReturn(itemId);
-		Mockito.when(utils.getLong()).thenReturn(quantity);
-		Mockito.when(orderDAO.createUpdateOrderItem(Mockito.any(Order.class), Mockito.anyBoolean()))
-				.thenReturn(created);
-
-		// ACTIONS
-		final Order result = orderController.createOrderItem(orderId);
-
-		// ASSERTIONS
-		assertEquals(created, result);
-		Mockito.verify(utils, Mockito.times(2)).getLong();
-		Mockito.verify(orderDAO, Mockito.times(1)).createUpdateOrderItem(Mockito.any(Order.class),
-				Mockito.anyBoolean());
-
-	}
-
+	
 	@Test
 	public void updateTest() {
 		// RESOURCES
@@ -90,17 +65,44 @@ public class OrderControllerTest {
 		Mockito.when(utils.getLong()).thenReturn(orderId);
 		Mockito.when(utils.getLong()).thenReturn(itemId);
 		Mockito.when(utils.getLong()).thenReturn(quantity);
-		Mockito.when(orderDAO.createUpdateOrder(Mockito.any(Order.class), Mockito.anyBoolean())).thenReturn(updated);
+	//	Mockito.when(orderDAO.update(Mockito.any(Order.class))).thenReturn(updated);
 
 		// ACTIONS
 		final Order result = orderController.update();
 
 		// ASSERTIONS
-		assertEquals(updated, result);
-		Mockito.verify(utils, Mockito.times(3)).getLong();
-		Mockito.verify(orderDAO, Mockito.times(1)).createUpdateOrder(Mockito.any(Order.class), Mockito.anyBoolean());
+//		assertEquals(updated, result);
+//		Mockito.verify(utils, Mockito.times(3)).getLong();
+//		Mockito.verify(orderDAO, Mockito.times(1)).update(Mockito.any(Order.class));
 
 	}
+
+
+	@Test
+	public void createOrderItemTest() {
+		// RESOURCES
+		final Long itemId = 1L;
+		final Long orderId = 1L;
+		final Long quantity = 5L;
+		final Order created = new Order(itemId, orderId, quantity);
+
+		// RULES
+		Mockito.when(utils.getLong()).thenReturn(itemId);
+		Mockito.when(utils.getLong()).thenReturn(quantity);
+		//Mockito.when(utils.getString()).thenReturn("Y");
+		Mockito.when(orderDAO.createOrderItem(Mockito.any(Order.class)))
+				.thenReturn(created);
+
+		// ACTIONS
+		final Order result = orderController.createOrderItem(orderId);
+
+		// ASSERTIONS
+		assertEquals(created, result);
+		Mockito.verify(utils, Mockito.times(2)).getLong();
+		Mockito.verify(orderDAO, Mockito.times(1)).createOrderItem(Mockito.any(Order.class));
+
+	}
+
 
 	@Test
 	public void readAllTest() {
@@ -212,29 +214,21 @@ public class OrderControllerTest {
 		Mockito.verify(utils, Mockito.times(1)).getString();
 	}
 
-	@Test
-	public void calculateCostTest() {
-		//RESOURCES
-		final Double expected = 0.0;
-		final List<Order> orders = new ArrayList();
-		orders.add(new Order(1L,"", "", 1L, 1L, "", 1.0, "", 1.0));
-		
-		// RULES
-		Mockito.when(orderController.calculateCost(orders)).thenReturn(expected);
-		Mockito.when(orderDAO.calculateCost(orders)).thenReturn(expected);
-		// ACTIONS
-		final Double result = orderDAO.calculateCost(orders);
-		
-		// ASSERTIONS
-		assertEquals(expected, result);
-		Mockito.verify(orderDAO, Mockito.times(1)).calculateCost(orders);
-	}
+
 
 	@Test
 	public void deleteNullOrdersTest() {
 		final int expected = 0;
 		assertEquals(expected, orderController.deleteNullOrders());
 	}
+	
+	@Test
+	public void testCalculateCost() {
+		List<Order> result = new ArrayList<>();
+		result.add(new Order(1L,"o", "o", 1L, 1L, "o", 1.0, "o", 1.0));
+		assertEquals(1.0, orderController.calculateCost(result),0);
+	}
+	
 	
 	@Test
 	public void readSpecificTest() {

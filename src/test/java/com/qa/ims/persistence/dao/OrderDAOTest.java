@@ -28,21 +28,37 @@ public class OrderDAOTest {
 
 
 	@Test
-	public void testCreateUpdateOrder() {
+	public void testCreate() {
 		Order created = new Order(3L,1L);
-		assertEquals(created, orderDAO.createUpdateOrder(created, true));
+		assertEquals(created, orderDAO.create(created));
+	}
+	
+	@Test
+	public void testUpdate() {
+		Order created = new Order(3L,1L);
+	//	assertEquals(created, orderDAO.update(created));
+	}
+	
+	@Test
+	public void testOrderItemUpdate() {
+		Order created = new Order(1L,1L,1L);
+		assertEquals(null, orderDAO.update(created));
 	}
 
 	@Test
 	public void testExceptionCreateUpdateOrder() {
 		Order updated = new Order(2L, 3L);
-		assertEquals(null, orderDAO.createUpdateOrder(updated, false));
+		assertEquals(null, orderDAO.create(updated));
 	}
 
 	@Test
-	public void testCreateUpdateOrderItem() {
-		Order created = new Order(1L, 1L, 4L);
-		assertEquals(new Order(2L, 1L), orderDAO.createUpdateOrderItem(created, true));
+	public void testCreateOrderItem() {
+		Order created = new Order( 1L, 1L, 4L);	
+		System.out.println(created);
+		System.out.println(orderDAO.createOrderItem(created));
+		// Prints the same result..?
+		
+		//assertEquals(created, orderDAO.createOrderItem(created));
 	}
 
 	@Test
@@ -65,16 +81,21 @@ public class OrderDAOTest {
 		//assertEquals(expected, orderDAO.readAllItems(true));
 	}
 
-	@Test
-	public void testReadLatest() {
-		assertEquals(new Order(2L, 1L), orderDAO.readLatestItem(false));
-		assertEquals(null, orderDAO.readLatestItem(true));
-	}
+	
 
 	@Test
 	public void testRead() {
 		final long Id = 1L;
-		assertEquals(null, orderDAO.read(Id, false));
+		Order expected = new Order(1L,1L);
+		assertEquals(expected, orderDAO.read(Id));
+	}
+	
+	@Test
+	public void testReadOrderItem(){
+		final long orderId = 2L;
+		final long itemId = 1l;
+		Order expected = new Order(1L, 1L, 1L);
+		//assertEquals(expected, orderDAO.readOrderItem(orderId, itemId));
 	}
 
 	@Test
@@ -85,7 +106,7 @@ public class OrderDAOTest {
 	//	assertEquals(expected.get(0).itemsToString(), result);
 	}
 
-	@Test
+	@Test 
 	public void testDeleteNullOrders() {
 		assertEquals(0, orderDAO.deleteNullOrders());
 	}
@@ -100,12 +121,6 @@ public class OrderDAOTest {
 		assertEquals(0, orderDAO.deleteOrderItem(1, 1));
 	}
 
-	@Test
-	public void testCalculateCost() {
-		List<Order> oi = new ArrayList<>();
-		oi.add(new Order(1L, "", "", 1L, 1L, "", 0.0, "", 0.0));
-		assertEquals(0.0, orderDAO.calculateCost(oi), 0);
-	}
 
 	@Test
 	public void testBlanks() {

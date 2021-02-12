@@ -21,7 +21,7 @@ public class OrderController implements CrudController<Order> {
 		this.orderDAO = orderDAO;
 		this.utils = utils;
 	}
- 
+  
 	@Override
 	public List<Order> readAll() {
 		List<Order> orders = orderDAO.readAllItems(false);
@@ -36,10 +36,12 @@ public class OrderController implements CrudController<Order> {
 			for (Order orderItem : orderItems) {
 				LOGGER.info(orderItem.itemsToString());
 			}
+			LOGGER.info("Total Cost: £" + calculateCost(orderItems));
 			return orderItems;
 		} else if (choice.equalsIgnoreCase("ID")) {
 			readSpecific();
 		}
+		
 		return orders;
 	} 
 
@@ -60,13 +62,13 @@ public class OrderController implements CrudController<Order> {
 		String choice;
 		LOGGER.info("Enter your customer id");
 		Long custId = utils.getLong();
-		Order order = orderDAO.createUpdateOrder(new Order(custId), true);
+		Order order = orderDAO.create(new Order(custId));
 		do {
-			LOGGER.info("Would you like to order another item? Yes (Y)/No (N)");
+			LOGGER.info("Add item? Yes (Y)/No (N)");
 			choice = utils.getString();
 			if (choice.equalsIgnoreCase("Y")) {
 				createOrderItem(order.getOrderId());
-			} else {
+			} else if (choice.equalsIgnoreCase("N")) {
 				complete = true;
 			}
 		} while (!complete);
@@ -84,9 +86,9 @@ public class OrderController implements CrudController<Order> {
 		Long itemId = utils.getLong();
 		LOGGER.info("Please enter the quantity");
 		Long quantity = utils.getLong();
-		return orderDAO.createUpdateOrderItem(new Order(itemId, orderId, quantity), true);
+		return orderDAO.createOrderItem(new Order(itemId, orderId, quantity));
 
-	}
+	} 
 
 	@Override
 	public Order update() {
@@ -96,7 +98,7 @@ public class OrderController implements CrudController<Order> {
 		Long itemId = utils.getLong();
 		LOGGER.info("Please enter the quantity: ");
 		Long quantity = utils.getLong();
-		return orderDAO.createUpdateOrder(new Order(itemId, orderId, quantity), false);
+		return orderDAO.updateOrderItem(new Order(itemId, orderId, quantity));
 	}
 
 	@Override
@@ -122,10 +124,12 @@ public class OrderController implements CrudController<Order> {
 		return orderDAO.deleteOrderItem(orderId, itemId);
 	}
 
-	public Double calculateCost(List<Order> o) {
-		LOGGER.info("\nTotal Cost of orders: £");
-		orderDAO.calculateCost(o);
-		return 0.0;
+	public Double calculateCost(List<Order> oi) {
+		Double sum = 0.0;
+		for (Order o : oi) {
+			sum += o.getTotalCost();
+		}
+		return sum;
 	}
 
 	public int deleteNullOrders() {

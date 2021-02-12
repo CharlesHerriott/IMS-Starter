@@ -28,19 +28,19 @@ public class OrderDAOExceptionTest {
 	@Test
 	public void testCreateUpdateOrder() {
 		Order created = new Order(2L, 1L);
-		assertEquals(null, orderDAO.createUpdateOrder(created, true));
+		assertEquals(null, orderDAO.create(created));
 	}
 
 	@Test
 	public void testExceptionCreateUpdateOrder() {
 		Order updated = new Order(2L, 3L);
-		assertEquals(null, orderDAO.createUpdateOrder(updated, false));
+		assertEquals(null, orderDAO.create(updated));
 	}
 
 	@Test
 	public void testCreateUpdateOrderItem() {
 		Order created = new Order(1L, 1L, 4L);
-		assertEquals(null, orderDAO.createUpdateOrderItem(created, false));
+		assertEquals(null, orderDAO.createOrderItem(created));
 		
 	}
 
@@ -60,7 +60,7 @@ public class OrderDAOExceptionTest {
 	@Test
 	public void testRead() {
 		final long Id = 1L;
-		assertEquals(null, orderDAO.read(Id, false));
+		assertEquals(null, orderDAO.read(Id));
 	}
 
 	@Test
@@ -85,12 +85,6 @@ public class OrderDAOExceptionTest {
 		assertEquals(0, orderDAO.deleteOrderItem(1, 1));
 	}
 
-	@Test
-	public void testCalculateCost() {
-		List<Order> oi = new ArrayList<>();
-		oi.add(new Order(1L, "", "", 1L, 1L, "", 0.0, "", 0.0));
-		assertEquals(0.0, orderDAO.calculateCost(oi), 0);
-	}
 
 	@Test
 	public void testBlanks() {
