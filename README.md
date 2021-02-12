@@ -1,4 +1,4 @@
-Coverage: 82.6%
+Coverage: 82.1%
 # Inventory Management System Project
 The Inventory Management System allows for users to Create, Read, Update and Delete (CRUD) objects from SQL database tables. This achieved through the usage of JCDB and Java, which work in tandem to prepare and execute SQL queries into the connected database.
 
@@ -6,6 +6,7 @@ The Inventory Management System allows for users to Create, Read, Update and Del
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+
 
 ### Prerequisites
 
@@ -109,6 +110,11 @@ public void testCreateOrder() {
 }
 ```
 
+## Jira Board
+The Jira Board associated with this project can be found at:
+```
+https://team-1610454468083.atlassian.net/secure/RapidBoard.jspa?rapidView=7&projectKey=IPO&view=planning.nodetail&issueLimit=100&atlOrigin=eyJpIjoiOTcwNjBkM2NmOTA3NGI3OGEyYjJhZWI3MDBlODA0Y2IiLCJwIjoiaiJ9
+```
 
 ## Built With
 
