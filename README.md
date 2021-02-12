@@ -7,6 +7,7 @@ The Inventory Management System allows for users to Create, Read, Update and Del
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
+
 ### Prerequisites
 
 In order to run, this application requires some mininum prerequisites. Java 14.0.x is required as a mininum version to run the application, which can be found at:
@@ -109,6 +110,11 @@ public void testCreateOrder() {
 }
 ```
 
+## Jira Board
+The Jira Board associated with this project can be found at:
+```
+https://team-1610454468083.atlassian.net/secure/RapidBoard.jspa?rapidView=7&projectKey=IPO&view=planning.nodetail&issueLimit=100&atlOrigin=eyJpIjoiOTcwNjBkM2NmOTA3NGI3OGEyYjJhZWI3MDBlODA0Y2IiLCJwIjoiaiJ9
+```
 
 ## Built With
 
