@@ -43,7 +43,8 @@ public class Customer {
 
 	@Override
 	public String toString() {
-		return "id:" + id + " First name:" + firstName + " Surname:" + surname;
+		String br = Formatting.BR.getDescription();
+		return br + "id:" + id + " Name:" + Formatting.fixedLengthString(firstName, surname);     
 	}
 
 	@Override

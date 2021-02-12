@@ -35,7 +35,7 @@ public class CustomerTest {
 	
 	@Test
 	public void testToString() {
-		assertEquals("id:12345 First name:Charlie Surname:Herriott",cust.toString());
+		assertEquals(Formatting.BR.getDescription() + "id:12345 Name:Charlie Herriott   ",cust.toString());
 
 	}
 	

@@ -43,7 +43,6 @@ public class OrderDAOTest {
 	public void testCreateUpdateOrderItem() {
 		Order created = new Order(1L, 1L, 4L);
 		assertEquals(new Order(2L, 1L), orderDAO.createUpdateOrderItem(created, true));
-		
 	}
 
 	@Test
@@ -63,7 +62,7 @@ public class OrderDAOTest {
 		expected.add(new Order(1L,1L,4L));
 		expected.add(new Order(1L,1L,4L));
 		
-	//	assertEquals(expected, orderDAO.readAllItems(true));
+		//assertEquals(expected, orderDAO.readAllItems(true));
 	}
 
 	@Test

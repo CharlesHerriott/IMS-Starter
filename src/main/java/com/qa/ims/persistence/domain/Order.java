@@ -134,9 +134,9 @@ public class Order {
 
 	public String itemsToString() {
 		String br = Formatting.BR.getDescription();
-		return br + "\nName: " + fname + " " + sname  + " | Order ID: " + orderId + " | Item ID: " + itemId
-				+ " | Qty: " + quantity + " | Item: " + itemName + " | Item Cost: £" + itemCost + " | Description: "
-				+ itemDesc + " | Total Cost: £" + totalCost;
+		return br + "\nName: " + Formatting.fixedLengthString(fname,sname)  + " | Order ID: " + orderId + " | Item ID: " + itemId
+				+ " | Qty: " + quantity + " | Item: " + Formatting.fixedLengthString(itemName) + " | Item Cost: £" + itemCost + " | Description: "
+				+ Formatting.fixedLengthString(itemDesc) + " | Total Cost: £" + totalCost;
 	}
 
 	@Override
