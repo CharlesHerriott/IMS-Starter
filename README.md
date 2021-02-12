@@ -1,4 +1,4 @@
-Coverage: 82.6%
+Coverage: 82.1%
 # Inventory Management System Project
 The Inventory Management System allows for users to Create, Read, Update and Delete (CRUD) objects from SQL database tables. This achieved through the usage of JCDB and Java, which work in tandem to prepare and execute SQL queries into the connected database.
 
